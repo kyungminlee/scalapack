@@ -308,9 +308,16 @@
 *  LWORK   (local or global input) INTEGER
 *          The dimension of the array WORK.
 *          LWORK is local input and must be at least
-*          LWORK = MAX( PSPOCON( LWORK ), PSPORFS( LWORK ) )
-*                  + LOCr( N_A ).
-*          LWORK = 3*DESCA( LLD_ )
+*          LWORK >= MAX( 3*NP,
+*                        2*NP + 2*NQ +
+*                        MAX( 2, MAX( NB_A*MAX(1,CEIL(NPROW-1,NPCOL)),
+*                                     NQ + NB_A*MAX(1,CEIL(NPCOL-1,NPROW))
+*                                   ) ) )
+*          where
+*            NP = NUMROC( N+MOD(IA-1,MB_A), MB_A, MYROW, IAROW, NPROW ),
+*            NQ = NUMROC( N+MOD(JA-1,NB_A), NB_A, MYCOL, IACOL, NPCOL ).
+*          The first term covers PSPORFS, the second covers PSPOCON; the
+*          PSLANSY('1') norm requirement of 2*NQ + NP + LDW is dominated.
 *
 *          If LWORK = -1, then LWORK is global input and a workspace
 *          query is assumed; the routine only calculates the minimum
@@ -381,9 +388,9 @@
 *     ..
 *     .. External Functions ..
       LOGICAL            LSAME
-      INTEGER            INDXG2P, NUMROC
+      INTEGER            ICEIL, INDXG2P, NUMROC
       REAL               PSLANSY, PSLAMCH
-      EXTERNAL           INDXG2P, LSAME, NUMROC, PSLANSY, PSLAMCH
+      EXTERNAL           ICEIL, INDXG2P, LSAME, NUMROC, PSLANSY, PSLAMCH
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          ICHAR, MAX, MIN, MOD
@@ -427,7 +434,14 @@
             NQ = NUMROC( N+ICOFFA, DESCA( NB_ ), MYCOL, IACOL, NPCOL )
             IF( MYCOL.EQ.IACOL )
      $         NQ = NQ-ICOFFA
-            LWMIN = 3*DESCA( LLD_ )
+*           LWMIN sized to satisfy both PSPOCON and PSPORFS workspace
+*           requirements (cf. PSGESVX).
+            LWMIN = MAX( 3*NP,
+     $              2*NP + 2*NQ +
+     $              MAX( 2, MAX( DESCA( NB_ )*
+     $                   MAX( 1, ICEIL( NPROW-1, NPCOL ) ),
+     $                   NQ + DESCA( NB_ )*
+     $                   MAX( 1, ICEIL( NPCOL-1, NPROW ) ) ) ) )
             LIWMIN = NP
             NOFACT = LSAME( FACT, 'N' )
             EQUIL = LSAME( FACT, 'E' )

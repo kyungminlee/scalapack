@@ -306,11 +306,17 @@
 *          On exit, WORK(1) returns the minimal and optimal LWORK.
 *
 *  LWORK   (local or global input) INTEGER
-*          The dimension of the array WORK.
+*          The dimension of the COMPLEX*16 array WORK.
 *          LWORK is local input and must be at least
-*          LWORK = MAX( PZPOCON( LWORK ), PZPORFS( LWORK ) )
-*                  + LOCr( N_A ).
-*          LWORK = 3*DESCA( LLD_ )
+*          LWORK >= MAX( 2*NP,
+*                        2*NP +
+*                        MAX( 2, MAX( NB_A*MAX(1,CEIL(NPROW-1,NPCOL)),
+*                                     NQ + NB_A*MAX(1,CEIL(NPCOL-1,NPROW))
+*                                   ) ) )
+*          where
+*            NP = NUMROC( N+MOD(IA-1,MB_A), MB_A, MYROW, IAROW, NPROW ),
+*            NQ = NUMROC( N+MOD(JA-1,NB_A), NB_A, MYCOL, IACOL, NPCOL ).
+*          The first term covers PZPORFS, the second covers PZPOCON.
 *
 *          If LWORK = -1, then LWORK is global input and a workspace
 *          query is assumed; the routine only calculates the minimum
@@ -325,7 +331,11 @@
 *  LRWORK  (local or global input) INTEGER
 *          The dimension of the array RWORK.
 *          LRWORK is local input and must be at least
-*          LRWORK = 2*LOCc(N_A).
+*          LRWORK >= MAX( 2*NQ + NP + LDW, 2*NQ, NP )
+*          where LDW = NB_A*CEIL(CEIL(NP/NB_A)/(LCM/NPROW)) if
+*          NPROW /= NPCOL, else 0, with LCM = ILCM(NPROW,NPCOL).
+*          The 2*NQ + NP + LDW term covers PZLANHE('1'); 2*NQ covers
+*          PZPOCON; NP covers PZPORFS.
 *
 *          If LRWORK = -1, then LRWORK is global input and a workspace
 *          query is assumed; the routine only calculates the minimum
@@ -380,9 +390,10 @@
 *     ..
 *     .. External Functions ..
       LOGICAL            LSAME
-      INTEGER            INDXG2P, NUMROC
+      INTEGER            ICEIL, ILCM, INDXG2P, NUMROC
       DOUBLE PRECISION   PDLAMCH, PZLANHE
-      EXTERNAL           PDLAMCH, INDXG2P, LSAME, NUMROC, PZLANHE
+      EXTERNAL           ICEIL, ILCM, PDLAMCH, INDXG2P, LSAME, NUMROC,
+     $                   PZLANHE
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          ICHAR, MAX, MIN, MOD
@@ -426,8 +437,25 @@
             NQ = NUMROC( N+ICOFFA, DESCA( NB_ ), MYCOL, IACOL, NPCOL )
             IF( MYCOL.EQ.IACOL )
      $         NQ = NQ-ICOFFA
-            LWMIN = 3*DESCA( LLD_ )
-            LRWMIN = MAX( 2*NQ, NP )
+*           LWMIN sized to satisfy both PZPOCON (complex part) and
+*           PZPORFS workspace requirements (cf. PZGESVX).
+            LWMIN = MAX( 2*NP,
+     $              2*NP +
+     $              MAX( 2, MAX( DESCA( NB_ )*
+     $                   MAX( 1, ICEIL( NPROW-1, NPCOL ) ),
+     $                   NQ + DESCA( NB_ )*
+     $                   MAX( 1, ICEIL( NPCOL-1, NPROW ) ) ) ) )
+*           LRWMIN sized to cover PZLANHE('1'), PZPOCON (real part),
+*           and PZPORFS. PZLANHE does not validate LWORK, so RWORK must
+*           be sized correctly here.
+            IF( NPROW.NE.NPCOL ) THEN
+               LRWMIN = 2*NQ + NP + DESCA( NB_ ) *
+     $                  ICEIL( ICEIL( NP, DESCA( NB_ ) ),
+     $                         ILCM( NPROW, NPCOL ) / NPROW )
+            ELSE
+               LRWMIN = 2*NQ + NP
+            END IF
+            LRWMIN = MAX( LRWMIN, 2*NQ, NP )
             NOFACT = LSAME( FACT, 'N' )
             EQUIL = LSAME( FACT, 'E' )
             IF( NOFACT .OR. EQUIL ) THEN

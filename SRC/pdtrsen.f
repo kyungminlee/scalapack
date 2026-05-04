@@ -498,25 +498,31 @@
             M = 0
             DO 10 K = 1, N
 *
-*              IWORK(1:N) is an integer copy of SELECT.
+*              IWORK(1:N) is an integer copy of SELECT.  Skip the
+*              writes when LQUERY is true: under the documented
+*              workspace-query contract the caller is permitted to
+*              pass IWORK with size 1, so IWORK(2:N) is out of bounds.
 *
-               IF( SELECT(K) ) THEN
-                  IWORK(K) = 1
-               ELSE
-                  IWORK(K) = 0
-               END IF
-               IF( K.LT.N ) THEN
-                  CALL INFOG2L( K+1, K, DESCT, NPROW, NPCOL,
-     $                 MYROW, MYCOL, ITT, JTT, TRSRC, TCSRC )
-                  IF( MYROW.EQ.TRSRC .AND. MYCOL.EQ.TCSRC ) THEN
-                     ELEM = T( (JTT-1)*LLDT + ITT )
-                     IF( ELEM.NE.ZERO ) THEN
-                        IF( SELECT(K) .AND. .NOT.SELECT(K+1) ) THEN
-*                           INFO = -3
-                           IWORK(K+1) = 1
-                        ELSEIF( .NOT.SELECT(K) .AND. SELECT(K+1) ) THEN
-*                           INFO = -3
-                           IWORK(K) = 1
+               IF( .NOT.LQUERY ) THEN
+                  IF( SELECT(K) ) THEN
+                     IWORK(K) = 1
+                  ELSE
+                     IWORK(K) = 0
+                  END IF
+                  IF( K.LT.N ) THEN
+                     CALL INFOG2L( K+1, K, DESCT, NPROW, NPCOL,
+     $                    MYROW, MYCOL, ITT, JTT, TRSRC, TCSRC )
+                     IF( MYROW.EQ.TRSRC .AND. MYCOL.EQ.TCSRC ) THEN
+                        ELEM = T( (JTT-1)*LLDT + ITT )
+                        IF( ELEM.NE.ZERO ) THEN
+                           IF( SELECT(K) .AND. .NOT.SELECT(K+1) ) THEN
+*                              INFO = -3
+                              IWORK(K+1) = 1
+                           ELSEIF( .NOT.SELECT(K) .AND. SELECT(K+1) )
+     $                            THEN
+*                              INFO = -3
+                              IWORK(K) = 1
+                           END IF
                         END IF
                      END IF
                   END IF
@@ -533,7 +539,7 @@
      $                -1, -1, -1, -1, -1 )
             IF( MMAX( 1 ).GT.MMIN( 1 ) ) THEN
                M = MMAX( 1 )
-               IF( NPROCS.GT.1 )
+               IF( NPROCS.GT.1 .AND. .NOT.LQUERY )
      $              CALL IGAMX2D( ICTXT, 'All', TOP, N, 1, IWORK, N,
      $                   -1, -1, -1, -1, -1 )
             END IF

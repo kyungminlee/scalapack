@@ -329,6 +329,9 @@
          IF( MYROW.EQ.ICROW2 )
      $      MPC2 = MPC2 - IROFFC2
          ICOFFC2 = MOD( JC+N-L-1, DESCC( NB_ ) )
+         NQV = NUMROC( L+ICOFFC2, DESCC( NB_ ), MYCOL, ICCOL2, NPCOL )
+         IF( MYCOL.EQ.ICCOL2 )
+     $      NQV = NQV - ICOFFC2
       END IF
       IIC2 = MIN( IIC2, LDC )
       JJC2 = MIN( JJC2, NCC )

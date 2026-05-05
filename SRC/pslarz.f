@@ -318,6 +318,9 @@
          NQC2 = NUMROC( N+ICOFFC2, DESCC( NB_ ), MYCOL, ICCOL2, NPCOL )
          IF( MYCOL.EQ.ICCOL2 )
      $      NQC2 = NQC2 - ICOFFC2
+         MPV = NUMROC( L+IROFFC2, DESCC( MB_ ), MYROW, ICROW2, NPROW )
+         IF( MYROW.EQ.ICROW2 )
+     $      MPV = MPV - IROFFC2
       ELSE
          CALL INFOG2L( IC, JC+N-L, DESCC, NPROW, NPCOL, MYROW, MYCOL,
      $                 IIC2, JJC2, ICROW2, ICCOL2 )

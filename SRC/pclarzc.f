@@ -319,6 +319,12 @@
          NQC2 = NUMROC( N+ICOFFC2, DESCC( NB_ ), MYCOL, ICCOL2, NPCOL )
          IF( MYCOL.EQ.ICCOL2 )
      $      NQC2 = NQC2 - ICOFFC2
+*        Override MPV/NQV to use sub(C2)'s distribution; mirrors
+*        the fix applied to p?larz so that PBxTRNV's destination
+*        write count matches the local ZGEMV/CGEMV read count.
+         MPV = NUMROC( L+IROFFC2, DESCC( MB_ ), MYROW, ICROW2, NPROW )
+         IF( MYROW.EQ.ICROW2 )
+     $      MPV = MPV - IROFFC2
       ELSE
          CALL INFOG2L( IC, JC+N-L, DESCC, NPROW, NPCOL, MYROW, MYCOL,
      $                 IIC2, JJC2, ICROW2, ICCOL2 )
@@ -327,6 +333,9 @@
          IF( MYROW.EQ.ICROW2 )
      $      MPC2 = MPC2 - IROFFC2
          ICOFFC2 = MOD( JC+N-L-1, DESCC( NB_ ) )
+         NQV = NUMROC( L+ICOFFC2, DESCC( NB_ ), MYCOL, ICCOL2, NPCOL )
+         IF( MYCOL.EQ.ICCOL2 )
+     $      NQV = NQV - ICOFFC2
       END IF
       IIC2 = MIN( IIC2, LDC )
       JJC2 = MIN( JJC2, NCC )

@@ -256,8 +256,8 @@
 *     ..
 *     .. External Subroutines ..
       EXTERNAL           BLACS_GRIDINFO, CAXPY, CCOPY, CGEBR2D,
-     $                   CGEBS2D, CGEMV, CGERC, CGERV2D,
-     $                   CGESD2D, CGSUM2D, CLASET, INFOG2L,
+     $                   CGEBS2D, CGEMV, CGERC, CGERU, CGERV2D,
+     $                   CGESD2D, CGSUM2D, CLACGV, CLASET, INFOG2L,
      $                   PB_TOPGET, PBCTRNV
 *     ..
 *     .. External Functions ..
@@ -389,6 +389,7 @@
                         CALL CGEMV( 'Conjugate transpose', MPV, NQC2,
      $                              ONE, C( IOFFC2 ), LDC, WORK, 1,
      $                              ZERO, WORK( IPW ), 1 )
+                        CALL CLACGV( NQC2, WORK( IPW ), 1 )
                      ELSE
                         CALL CLASET( 'All', NQC2, 1, ZERO, ZERO,
      $                               WORK( IPW ), MAX( 1, NQC2 ) )
@@ -406,7 +407,7 @@
                      IF( MYROW.EQ.ICROW1 )
      $                  CALL CAXPY( NQC2, -TAULOC( 1 ), WORK( IPW ),
      $                              MAX( 1, NQC2 ), C( IOFFC1 ), LDC )
-                     CALL CGERC( MPV, NQC2, -TAULOC( 1 ), WORK, 1,
+                     CALL CGERU( MPV, NQC2, -TAULOC( 1 ), WORK, 1,
      $                           WORK( IPW ), 1, C( IOFFC2 ), LDC )
                   END IF
 *
@@ -550,6 +551,7 @@
                      CALL CGEMV( 'Conjugate transpose', MPV, NQC2, ONE,
      $                           C( IOFFC2 ), LDC, WORK, 1, ZERO,
      $                           WORK( IPW ), 1 )
+                     CALL CLACGV( NQC2, WORK( IPW ), 1 )
                   ELSE
                      CALL CLASET( 'All', NQC2, 1, ZERO, ZERO,
      $                            WORK( IPW ), MAX( 1, NQC2 ) )
@@ -567,7 +569,7 @@
                   IF( MYROW.EQ.ICROW1 )
      $               CALL CAXPY( NQC2, -TAULOC( 1 ), WORK( IPW ),
      $                           MAX( 1, NQC2 ), C( IOFFC1 ), LDC )
-                  CALL CGERC( MPV, NQC2, -TAULOC( 1 ), WORK, 1,
+                  CALL CGERU( MPV, NQC2, -TAULOC( 1 ), WORK, 1,
      $                        WORK( IPW ), 1, C( IOFFC2 ), LDC )
                END IF
 *
@@ -602,6 +604,7 @@
                      CALL CGEMV( 'Conjugate transpose', MPV, NQC2, ONE,
      $                           C( IOFFC2 ), LDC, WORK, 1, ZERO,
      $                           WORK( IPW ), 1 )
+                     CALL CLACGV( NQC2, WORK( IPW ), 1 )
                   ELSE
                      CALL CLASET( 'All', NQC2, 1, ZERO, ZERO,
      $                            WORK( IPW ), MAX( 1, NQC2 ) )
@@ -619,7 +622,7 @@
                   IF( MYROW.EQ.ICROW1 )
      $               CALL CAXPY( NQC2, -TAULOC( 1 ), WORK( IPW ),
      $                           MAX( 1, NQC2 ), C( IOFFC1 ), LDC )
-                  CALL CGERC( MPV, NQC2, -TAULOC( 1 ), WORK, 1,
+                  CALL CGERU( MPV, NQC2, -TAULOC( 1 ), WORK, 1,
      $                        WORK( IPW ), 1, C( IOFFC2 ), LDC )
                END IF
 *

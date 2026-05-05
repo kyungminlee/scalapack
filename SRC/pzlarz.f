@@ -257,8 +257,8 @@
 *     .. External Subroutines ..
       EXTERNAL           BLACS_GRIDINFO, INFOG2L, PB_TOPGET, PBZTRNV,
      $                   ZAXPY, ZCOPY, ZGEBR2D, ZGEBS2D,
-     $                   ZGEMV, ZGERC, ZGERV2D, ZGESD2D,
-     $                   ZGSUM2D, ZLASET
+     $                   ZGEMV, ZGERC, ZGERU, ZGERV2D, ZGESD2D,
+     $                   ZGSUM2D, ZLACGV, ZLASET
 *     ..
 *     .. External Functions ..
       LOGICAL            LSAME
@@ -388,6 +388,7 @@
                         CALL ZGEMV( 'Conjugate transpose', MPV, NQC2,
      $                              ONE, C( IOFFC2 ), LDC, WORK, 1,
      $                              ZERO, WORK( IPW ), 1 )
+                        CALL ZLACGV( NQC2, WORK( IPW ), 1 )
                      ELSE
                         CALL ZLASET( 'All', NQC2, 1, ZERO, ZERO,
      $                               WORK( IPW ), MAX( 1, NQC2 ) )
@@ -405,7 +406,7 @@
                      IF( MYROW.EQ.ICROW1 )
      $                  CALL ZAXPY( NQC2, -TAULOC( 1 ), WORK( IPW ),
      $                              1, C( IOFFC1 ), LDC )
-                     CALL ZGERC( MPV, NQC2, -TAULOC( 1 ), WORK, 1,
+                     CALL ZGERU( MPV, NQC2, -TAULOC( 1 ), WORK, 1,
      $                           WORK( IPW ), 1, C( IOFFC2 ), LDC )
                   END IF
 *
@@ -548,6 +549,7 @@
                      CALL ZGEMV( 'Conjugate transpose', MPV, NQC2, ONE,
      $                           C( IOFFC2 ), LDC, WORK, 1, ZERO,
      $                           WORK( IPW ), 1 )
+                     CALL ZLACGV( NQC2, WORK( IPW ), 1 )
                   ELSE
                      CALL ZLASET( 'All', NQC2, 1, ZERO, ZERO,
      $                            WORK( IPW ), MAX( 1, NQC2 ) )
@@ -565,7 +567,7 @@
                   IF( MYROW.EQ.ICROW1 )
      $               CALL ZAXPY( NQC2, -TAULOC( 1 ), WORK( IPW ),
      $                           1, C( IOFFC1 ), LDC )
-                  CALL ZGERC( MPV, NQC2, -TAULOC( 1 ), WORK, 1,
+                  CALL ZGERU( MPV, NQC2, -TAULOC( 1 ), WORK, 1,
      $                        WORK( IPW ), 1, C( IOFFC2 ), LDC )
                END IF
 *
@@ -600,6 +602,7 @@
                      CALL ZGEMV( 'Conjugate transpose', MPV, NQC2, ONE,
      $                           C( IOFFC2 ), LDC, WORK, 1, ZERO,
      $                           WORK( IPW ), 1 )
+                     CALL ZLACGV( NQC2, WORK( IPW ), 1 )
                   ELSE
                      CALL ZLASET( 'All', NQC2, 1, ZERO, ZERO,
      $                            WORK( IPW ), MAX( 1, NQC2 ) )
@@ -617,7 +620,7 @@
                   IF( MYROW.EQ.ICROW1 )
      $               CALL ZAXPY( NQC2, -TAULOC( 1 ), WORK( IPW ),
      $                           1, C( IOFFC1 ), LDC )
-                  CALL ZGERC( MPV, NQC2, -TAULOC( 1 ), WORK, 1,
+                  CALL ZGERU( MPV, NQC2, -TAULOC( 1 ), WORK, 1,
      $                        WORK( IPW ), 1, C( IOFFC2 ), LDC )
                END IF
 *

@@ -357,7 +357,7 @@
 *              Transpose row vector V (ICOFFV = IROFFC2)
 *
                IPW = MPV+1
-               CALL PBCTRNV( ICTXT, 'Rowwise', 'Transpose', M,
+               CALL PBCTRNV( ICTXT, 'Rowwise', 'Transpose', L,
      $                       DESCV( NB_ ), IROFFC2, V( IOFFV ), LDV,
      $                       ZERO,
      $                       WORK, 1, IVROW, IVCOL, ICROW2, ICCOL2,
@@ -519,7 +519,7 @@
 *              Transpose and broadcast row vector V (ICOFFV=IROFFC2)
 *
                IPW = MPV+1
-               CALL PBCTRNV( ICTXT, 'Rowwise', 'Transpose', M,
+               CALL PBCTRNV( ICTXT, 'Rowwise', 'Transpose', L,
      $                       DESCV( NB_ ), IROFFC2, V( IOFFV ), LDV,
      $                       ZERO,
      $                       WORK, 1, IVROW, IVCOL, ICROW2, -1,
@@ -740,7 +740,7 @@
 *              Transpose column vector V (IROFFV = ICOFFC2)
 *
                IPW = NQV+1
-               CALL PBCTRNV( ICTXT, 'Columnwise', 'Transpose', N,
+               CALL PBCTRNV( ICTXT, 'Columnwise', 'Transpose', L,
      $                       DESCV( MB_ ), ICOFFC2, V( IOFFV ), 1, ZERO,
      $                       WORK, 1, IVROW, IVCOL, ICROW2, ICCOL2,
      $                       WORK( IPW ) )
@@ -856,7 +856,7 @@
 *              Transpose and broadcast column vector V (ICOFFC2=IROFFV)
 *
                IPW = NQV+1
-               CALL PBCTRNV( ICTXT, 'Columnwise', 'Transpose', N,
+               CALL PBCTRNV( ICTXT, 'Columnwise', 'Transpose', L,
      $                       DESCV( MB_ ), ICOFFC2, V( IOFFV ), 1, ZERO,
      $                       WORK, 1, IVROW, IVCOL, -1, ICCOL2,
      $                       WORK( IPW ) )

@@ -396,7 +396,7 @@
                      END IF
                      IF( MYROW.EQ.ICROW1 )
      $                  CALL CAXPY( NQC2, ONE, C( IOFFC1 ), LDC,
-     $                              WORK( IPW ), MAX( 1, NQC2 ) )
+     $                              WORK( IPW ), 1 )
 *
                      CALL CGSUM2D( ICTXT, 'Columnwise', ' ', NQC2, 1,
      $                             WORK( IPW ), MAX( 1, NQC2 ), RDEST,
@@ -406,7 +406,7 @@
 *
                      IF( MYROW.EQ.ICROW1 )
      $                  CALL CAXPY( NQC2, -TAULOC( 1 ), WORK( IPW ),
-     $                              MAX( 1, NQC2 ), C( IOFFC1 ), LDC )
+     $                              1, C( IOFFC1 ), LDC )
                      CALL CGERU( MPV, NQC2, -TAULOC( 1 ), WORK, 1,
      $                           WORK( IPW ), 1, C( IOFFC2 ), LDC )
                   END IF
@@ -558,7 +558,7 @@
                   END IF
                   IF( MYROW.EQ.ICROW1 )
      $               CALL CAXPY( NQC2, ONE, C( IOFFC1 ), LDC,
-     $                           WORK( IPW ), MAX( 1, NQC2 ) )
+     $                           WORK( IPW ), 1 )
 *
                   CALL CGSUM2D( ICTXT, 'Columnwise', ' ', NQC2, 1,
      $                          WORK( IPW ), MAX( 1, NQC2 ), RDEST,
@@ -568,7 +568,7 @@
 *
                   IF( MYROW.EQ.ICROW1 )
      $               CALL CAXPY( NQC2, -TAULOC( 1 ), WORK( IPW ),
-     $                           MAX( 1, NQC2 ), C( IOFFC1 ), LDC )
+     $                           1, C( IOFFC1 ), LDC )
                   CALL CGERU( MPV, NQC2, -TAULOC( 1 ), WORK, 1,
      $                        WORK( IPW ), 1, C( IOFFC2 ), LDC )
                END IF
@@ -611,7 +611,7 @@
                   END IF
                   IF( MYROW.EQ.ICROW1 )
      $               CALL CAXPY( NQC2, ONE, C( IOFFC1 ), LDC,
-     $                           WORK( IPW ), MAX( 1, NQC2 ) )
+     $                           WORK( IPW ), 1 )
 *
                   CALL CGSUM2D( ICTXT, 'Columnwise', ' ', NQC2, 1,
      $                          WORK( IPW ), MAX( 1, NQC2 ), RDEST,
@@ -621,7 +621,7 @@
 *
                   IF( MYROW.EQ.ICROW1 )
      $               CALL CAXPY( NQC2, -TAULOC( 1 ), WORK( IPW ),
-     $                           MAX( 1, NQC2 ), C( IOFFC1 ), LDC )
+     $                           1, C( IOFFC1 ), LDC )
                   CALL CGERU( MPV, NQC2, -TAULOC( 1 ), WORK, 1,
      $                        WORK( IPW ), 1, C( IOFFC2 ), LDC )
                END IF

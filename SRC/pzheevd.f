@@ -297,7 +297,7 @@
          END IF
          IDUM2( 2 ) = 14
          CALL PCHK2MAT( N, 3, N, 3, IA, JA, DESCA, 7, N, 3, N, 3, IZ,
-     $                  JZ, DESCZ, 11, 2, IDUM1, IDUM2, INFO )
+     $                  JZ, DESCZ, 12, 2, IDUM1, IDUM2, INFO )
       END IF
 *
       IF( INFO.NE.0 ) THEN
